@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vatan — nashr uslubidagi taqdimot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+function imgFail(el){ var f = el.parentNode; if(f) f.setAttribute("data-noimg","1"); el.remove(); }
+</script>
+<style>
+:root{
+  --paper:#F4EFE4; --paper-2:#EAE2D2; --ink:#14212E; --ink-soft:#5A6B79;
+  --terra:#B5451B; --blue:#0E6E8C; --green:#2E7D4F; --line:rgba(20,33,46,.16);
+  --vw:min(1vw, 1.9vh);
+  --pad:clamp(22px,calc(4.5 * var(--vw)),80px);
+  --display:"Cormorant Garamond", Georgia, serif;
+  --body:"Inter","Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--paper)}
+body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--terra);outline-offset:3px}
+
+/* ---------- qog'oz fakturasi ---------- */
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='none' stroke='%2314212E' stroke-opacity='.05'%3E%3Cpath d='M70 8 L84 56 L132 70 L84 84 L70 132 L56 84 L8 70 L56 56Z'/%3E%3Ccircle cx='70' cy='70' r='34'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:140px 140px}
+
+/* ---------- slaydlar ---------- */
+.deck{position:fixed;inset:0;z-index:1}
+.slide{position:absolute;inset:0;background:var(--paper);
+  display:grid;grid-template-columns:1.05fr .95fr;
+  clip-path:inset(0 0 0 100%);pointer-events:none;
+  transition:clip-path .85s cubic-bezier(.76,0,.24,1)}
+.slide.active{clip-path:inset(0 0 0 0);pointer-events:auto;z-index:2}
+.slide.past{clip-path:inset(0 100% 0 0)}
+.pane{padding:calc(var(--pad) + 34px) var(--pad) calc(var(--pad) + 26px);
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(12px,2vh,22px);
+  overflow-y:auto;scrollbar-width:none;position:relative}
+.pane::-webkit-scrollbar{display:none}
+.slide.wide{grid-template-columns:1fr}
+
+/* ---------- tipografika ---------- */
+.kicker{font-size:clamp(10px,calc(.92 * var(--vw)),13px);font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--terra);display:flex;align-items:center;gap:12px}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line);max-width:120px}
+h2{font-family:var(--display);font-weight:600;line-height:1.02;letter-spacing:-.01em;
+  font-size:clamp(30px,calc(5 * var(--vw)),74px)}
+h2 em{font-style:italic;color:var(--terra)}
+.lede{font-size:clamp(13px,calc(1.25 * var(--vw)),18px);line-height:1.65;color:var(--ink-soft);max-width:56ch}
+.note{font-size:clamp(11px,calc(1 * var(--vw)),14px);line-height:1.6;color:var(--ink-soft)}
+.hr{height:1px;background:var(--line);width:100%}
+
+/* ---------- ochilish animatsiyasi ---------- */
+.rv{opacity:0;clip-path:inset(0 0 102% 0);transform:translateY(12px)}
+.slide.active .rv{animation:rv .9s cubic-bezier(.22,.7,.2,1) forwards;
+  animation-delay:calc(var(--i,0) * .09s + .35s)}
+@keyframes rv{to{opacity:1;clip-path:inset(0 0 -2% 0);transform:none}}
+
+/* ---------- rasm ustuni ---------- */
+.plate{position:relative;overflow:hidden;background:var(--paper-2)}
+.plate::after{content:attr(data-cap);position:absolute;left:0;bottom:0;z-index:3;
+  padding:10px 18px;background:var(--paper);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.plate img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(.92) contrast(1.02);clip-path:inset(0 0 0 100%)}
+.slide.active .plate img{animation:plate 1.1s cubic-bezier(.76,0,.24,1) forwards .25s, drift 26s ease-in-out infinite alternate 1.4s}
+@keyframes plate{to{clip-path:inset(0 0 0 0)}}
+@keyframes drift{from{transform:scale(1.02)}to{transform:scale(1.1) translate(-1.5%,-1%)}}
+.plate[data-noimg]{background:
+  repeating-linear-gradient(135deg,var(--paper-2) 0 18px,#E1D7C2 18px 36px)}
+.plate.split{display:grid;grid-template-rows:1fr 1fr;gap:2px;background:var(--line)}
+.plate.split figure{position:relative;overflow:hidden;background:var(--paper-2)}
+.plate.split img{position:absolute;inset:0}
+
+/* ---------- raqam belgisi ---------- */
+.folio{position:absolute;right:var(--pad);top:calc(var(--pad) - 6px);font-family:var(--display);
+  font-size:clamp(46px,calc(7 * var(--vw)),110px);line-height:1;color:var(--ink);opacity:.07}
+
+/* ---------- ro'yxatlar ---------- */
+.rows{border-top:1px solid var(--line)}
+.rows .row{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:baseline;
+  padding:clamp(7px,1.3vh,13px) 0;border-bottom:1px solid var(--line)}
+.rows .row b{font-family:var(--display);font-weight:600;font-size:clamp(16px,calc(1.8 * var(--vw)),26px);white-space:nowrap}
+.rows .row i{font-style:normal;font-size:11px;letter-spacing:.1em;color:var(--terra);margin-left:10px}
+.rows .row p{font-size:clamp(11px,calc(1.08 * var(--vw)),15px);line-height:1.5;color:var(--ink-soft);grid-column:2}
+
+/* ---------- raqamlar ---------- */
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vh,22px) clamp(16px,3vw,40px)}
+.fig{border-top:2px solid var(--ink);padding-top:10px;min-width:0}
+.fig b{display:block;font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;
+  font-size:clamp(26px,calc(3.6 * var(--vw)),56px);line-height:1;white-space:nowrap}
+.fig b small{font-family:var(--body);font-size:.32em;font-weight:500;letter-spacing:.1em;color:var(--terra);margin-left:6px;text-transform:uppercase}
+.fig span{display:block;margin-top:7px;font-size:clamp(10px,calc(.95 * var(--vw)),13px);line-height:1.5;color:var(--ink-soft)}
+
+/* ---------- foiz chiziqlari ---------- */
+.meter{margin-top:6px}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;font-size:clamp(11px,calc(1 * var(--vw)),14px);color:var(--ink-soft)}
+.meter .top b{font-family:var(--display);font-size:clamp(22px,calc(2.8 * var(--vw)),40px);color:var(--ink);font-variant-numeric:tabular-nums}
+.meter .track{height:5px;background:var(--paper-2);margin-top:8px;overflow:hidden}
+.meter .track i{display:block;height:100%;width:0;background:var(--c,var(--blue));transition:width 1.6s cubic-bezier(.2,.7,.2,1) .5s}
+
+/* ---------- bayroq ---------- */
+.flag{width:100%;border:1px solid var(--line)}
+.flag svg{display:block;width:100%;height:auto}
+.flag .band{transform-origin:left;transform:scaleX(0)}
+.slide.active .flag .band{animation:grow .8s cubic-bezier(.76,0,.24,1) forwards;animation-delay:calc(var(--i) * .1s + .5s)}
+@keyframes grow{to{transform:scaleX(1)}}
+.flag .moon{opacity:0}
+.slide.active .flag .moon{animation:fade .9s ease forwards 1.2s}
+.flag .st{opacity:0;transform-box:fill-box;transform-origin:center}
+.slide.active .flag .st{animation:fade .5s ease forwards;animation-delay:calc(var(--s) * .12s + 1.5s)}
+@keyframes fade{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.legend{display:grid;gap:clamp(6px,1.2vh,12px)}
+.legend div{display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:center;font-size:clamp(11px,calc(1.08 * var(--vw)),15px);line-height:1.45}
+.legend i{width:18px;height:18px;border:1px solid var(--line)}
+.legend b{font-weight:600}
+.legend span{color:var(--ink-soft)}
+
+/* ---------- she'rlar ---------- */
+.poems{display:grid;grid-template-columns:1fr;gap:clamp(10px,2vh,20px)}
+.poem p{max-width:60ch}
+.poem{border-top:2px solid var(--ink);padding-top:14px}
+.poem h3{font-family:var(--display);font-size:clamp(17px,calc(1.9 * var(--vw)),27px);font-weight:600}
+.poem .by{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin:4px 0 14px}
+.poem p{font-family:var(--display);font-style:italic;font-size:clamp(14px,calc(1.45 * var(--vw)),21px);line-height:1.62;color:var(--ink)}
+
+/* ---------- maqollar ---------- */
+.sayings{columns:2;column-gap:clamp(20px,4vw,56px)}
+.saying{break-inside:avoid;padding:clamp(9px,1.6vh,15px) 0;border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:baseline}
+.saying em{font-style:normal;font-family:var(--display);color:var(--terra);font-size:15px}
+.saying p{font-family:var(--display);font-size:clamp(14px,calc(1.5 * var(--vw)),22px);line-height:1.35}
+
+/* ---------- iqtibos ---------- */
+.pull{font-family:var(--display);font-size:clamp(20px,calc(2.6 * var(--vw)),40px);line-height:1.3;
+  border-left:2px solid var(--terra);padding-left:clamp(16px,2vw,28px)}
+.by-line{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra)}
+
+/* ---------- yakun ---------- */
+.final{grid-template-columns:1fr;place-items:center;text-align:center;position:relative;overflow:hidden}
+.finalbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.16;filter:grayscale(.3)}
+.final .pane{position:relative;z-index:2;background:linear-gradient(rgba(244,239,228,.72),rgba(244,239,228,.72));width:100%}
+.final .pane{align-items:center;max-width:1000px;margin:0 auto}
+#coverTitle{font-size:clamp(56px,calc(11 * var(--vw)),180px);letter-spacing:-.02em;line-height:.92}
+.final .kicker{justify-content:center}.final .kicker::after{display:none}
+.final .kicker::before{content:"";flex:1;height:1px;background:var(--line);max-width:90px}
+.mark{font-family:var(--display);font-weight:700;font-size:clamp(46px,calc(9 * var(--vw)),150px);line-height:.95;letter-spacing:-.02em}
+.mark em{font-style:italic;color:var(--terra)}
+.crew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(16px,3vw,44px);width:100%;margin-top:clamp(14px,3vh,30px)}
+.crew span{padding:clamp(7px,1.3vh,12px) 0;border-top:1px solid var(--line);font-size:clamp(11px,calc(1.15 * var(--vw)),16px);text-align:left}
+
+/* ---------- interfeys ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;
+  padding:14px var(--pad);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);
+  border-bottom:1px solid var(--line);background:rgba(244,239,228,.86);backdrop-filter:blur(6px)}
+.ticks{display:flex;gap:4px}
+.ticks i{width:16px;height:2px;background:var(--line)}
+.ticks i.on{background:var(--terra)}
+.botbar{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;
+  padding:10px var(--pad);border-top:1px solid var(--line);background:rgba(244,239,228,.86);backdrop-filter:blur(6px)}
+.flagrule{position:fixed;bottom:0;left:0;right:0;height:3px;z-index:11;
+  background:linear-gradient(90deg,var(--blue) 0 33%,#fff 33% 66%,var(--green) 66%)}
+.arrows{display:flex;gap:6px}
+.arrows button,.mbtn{padding:7px 14px;border:1px solid var(--line);border-radius:2px;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;transition:background .2s,color .2s}
+.arrows button:hover,.mbtn:hover{background:var(--ink);color:var(--paper)}
+.ytbox{position:fixed;left:var(--pad);bottom:52px;z-index:12;width:clamp(180px,17vw,240px);
+  border:1px solid var(--ink);background:var(--paper);box-shadow:0 12px 30px rgba(20,33,46,.18)}
+.ytbox[hidden]{display:none}
+.ytbox iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+.ytform{padding:12px;display:grid;gap:8px}
+.ytform p{font-size:11px;line-height:1.5;color:var(--ink-soft)}
+.ytform input{padding:8px;border:1px solid var(--line);font:inherit;font-size:12px;background:#fff;min-width:0}
+.ytform button{padding:8px;background:var(--ink);color:var(--paper);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- mobil ---------- */
+@media (max-width:860px){
+  .slide{grid-template-columns:1fr;grid-template-rows:34vh 1fr}
+  .slide.wide,.final{grid-template-rows:1fr}
+  .pane{padding:18px 18px 64px;justify-content:flex-start;gap:12px}
+  .figs,.poems,.crew{grid-template-columns:1fr}
+  .sayings{columns:1}
+  .plate{order:-1}
+  .folio{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1!important;clip-path:none!important;transform:none!important}
+  .plate img{clip-path:none!important}
+  .flag .band{transform:none!important}.flag .st,.flag .moon{opacity:1!important}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="topbar">
+  <span>Vatan — Ona yurtim Oʻzbekiston</span>
+  <span class="ticks" id="ticks" aria-hidden="true"></span>
+</header>
+
+<main class="deck" id="deck">
+
+<!-- 01 MUQOVA -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">01</span>
+    <p class="kicker rv" style="--i:0">Taqdimot — 2026</p>
+    <h2 class="rv" style="--i:1" id="coverTitle">VATAN</h2>
+    <p class="lede rv" style="--i:2">Bir yurt haqida oʻn ikki sahifa: osmoni va togʻlari, koʻhna shaharlari, bayrogʻi, qoʻshigʻi va — eng muhimi — odamlari haqida.</p>
+    <div class="hr rv" style="--i:3"></div>
+    <p class="note rv" style="--i:4">Varaqlash: ← → yoki Space. F — toʻliq ekran, M — musiqa.</p>
+  </div>
+  <div class="plate" data-cap="Registon, Samarqand">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/RegistanSquare_Samarkand.jpg/1200px-RegistanSquare_Samarkand.jpg" referrerpolicy="no-referrer" alt="Registon maydoni" onerror="imgFail(this)">
+  </div>
+</section>
+
+<!-- 02 VATAN NIMA -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">02</span>
+    <p class="kicker rv" style="--i:0">Soʻzning maʼnosi</p>
+    <h2 class="rv" style="--i:1">Vatan <em>nima?</em></h2>
+    <blockquote class="pull rv" style="--i:2">Har bir kishining tugʻulub oʻskan shahar va mamlakatini shul kishining vatani deyilur. Har kim tugʻulgan, oʻsgan yerini jonidan ortiq suyar.</blockquote>
+    <p class="by-line rv" style="--i:3">Abdulla Avloniy · “Turkiy Guliston yoxud axloq” · 1913</p>
+    <p class="note rv" style="--i:4">Avloniy uchun vatanni sevish kayfiyat emas, burch edi. Shu bobda u “Hubbul vatani minal iymon” — “Vatanni sevmoq imondandir” hikmatini keltiradi va uni har bir yoshning birinchi darsi deb biladi.</p>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Boʻstonliq"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Bo%60stonliq_manzarasi.jpg/1000px-Bo%60stonliq_manzarasi.jpg" referrerpolicy="no-referrer" alt="Boʻstonliq manzarasi" onerror="imgFail(this)"></figure>
+    <figure data-cap="Parkent"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cloudy_Parkent.jpg/1200px-Cloudy_Parkent.jpg" referrerpolicy="no-referrer" alt="Parkent togʻlari" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 03 RAQAMLAR -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">03</span>
+    <p class="kicker rv" style="--i:0">Qisqa maʼlumotnoma</p>
+    <h2 class="rv" style="--i:1">Oʻzbekiston</h2>
+    <div class="figs">
+      <div class="fig rv" style="--i:2"><b data-count="1991">0</b><span>Mustaqillik eʼlon qilingan yil; bayram — 1-sentabr</span></div>
+      <div class="fig rv" style="--i:3"><b><span data-count="35">0</span><small>yil</small></b><span>Bayrogʻimiz koʻtarilganiga shuncha vaqt boʻldi</span></div>
+      <div class="fig rv" style="--i:4"><b data-count="39047321">0</b><span>Shuncha kishi — 2026-yilgi roʻyxatga olishning dastlabki natijasi</span></div>
+      <div class="fig rv" style="--i:5"><b><span data-count="448.9" data-dec="1">0</span><small>ming km²</small></b><span>Qizilqum choʻlidan Tyan-Shan choʻqqilarigacha</span></div>
+      <div class="fig rv" style="--i:6"><b data-count="12">0</b><span>viloyat; ular bilan birga Qoraqalpogʻiston Respublikasi va Toshkent shahri</span></div>
+      <div class="fig rv" style="--i:7"><b>Toshkent</b><span>Poytaxt — mamlakatning eng yirik shahri</span></div>
+    </div>
+  </div>
+  <div class="plate" data-cap="Toshkent">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Tashkent%2C_Tashkent_City_from_Hotel_Shodlik_Palace.jpg/1400px-Tashkent%2C_Tashkent_City_from_Hotel_Shodlik_Palace.jpg" referrerpolicy="no-referrer" alt="Toshkent shahri" onerror="imgFail(this)">
+  </div>
+</section>
+
+<!-- 04 BAYROQ -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">04</span>
+    <p class="kicker rv" style="--i:0">1991-yil 18-noyabr</p>
+    <h2 class="rv" style="--i:1">Davlat <em>bayrogʻi</em></h2>
+    <div class="flag rv" style="--i:2" id="flagBox" role="img" aria-label="Oʻzbekiston bayrogʻi"></div>
+    <div class="legend">
+      <div class="rv" style="--i:3"><i style="background:#0099B5"></i><span><b>Moviy</b> — boshimiz uzra mangu osmon va hayot bergan suv. Amir Temur saltanatining bayrogʻi ham moviy edi.</span></div>
+      <div class="rv" style="--i:4"><i style="background:#fff"></i><span><b>Oq</b> — tinchlik, niyat va yoʻlning pokligi.</span></div>
+      <div class="rv" style="--i:5"><i style="background:#1EB53A"></i><span><b>Yashil</b> — bahor, hosil va tabiatning yangilanishi.</span></div>
+      <div class="rv" style="--i:6"><i style="background:#CE1126"></i><span><b>Qizil chiziqlar</b> — tomirlarda oqayotgan hayotiy kuch.</span></div>
+      <div class="rv" style="--i:7"><i style="background:#0E6E8C"></i><span><b>Yarim oy va 12 yulduz</b> — yangilanayotgan davr hamda mukammallikka, maʼnaviy yuksaklikka intilish.</span></div>
+    </div>
+  </div>
+  <div class="plate" data-cap="Tungi Registon">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Registan_square_at_night_Samarkand.jpg/1400px-Registan_square_at_night_Samarkand.jpg" referrerpolicy="no-referrer" alt="Tungi Registon" onerror="imgFail(this)">
+  </div>
+</section>
+
+<!-- 05 AJDODLAR -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">05</span>
+    <p class="kicker rv" style="--i:0">Ular shu zaminda tugʻilgan</p>
+    <h2 class="rv" style="--i:1">Buyuk <em>ajdodlarimiz</em></h2>
+    <div class="rows">
+      <div class="row rv" style="--i:2"><b>Al-Xorazmiy <i>783–850</i></b><p>Algebra fanini yoʻlga qoʻydi. Bugun butun dunyo ishlatadigan “algoritm” soʻzi uning nomidan qolgan.</p></div>
+      <div class="row rv" style="--i:3"><b>Ibn Sino <i>980–1037</i></b><p>“Tib qonunlari”ni yozdi; bu kitob Yevropa universitetlarida ham asrlar davomida darslik boʻlib xizmat qildi.</p></div>
+      <div class="row rv" style="--i:4"><b>Amir Temur <i>1336–1405</i></b><p>Sohibqiron. Samarqandni butun dunyo havas qiladigan poytaxtga aylantirdi.</p></div>
+      <div class="row rv" style="--i:5"><b>Mirzo Ulugʻbek <i>1394–1449</i></b><p>Taxt egasi boʻla turib, umrini ilmga bagʻishladi: rasadxonasida mingdan ortiq yulduz jadvalini tuzdi.</p></div>
+      <div class="row rv" style="--i:6"><b>Alisher Navoiy <i>1441–1501</i></b><p>“Xamsa”ni yaratdi va ona tilimizning sheʼriyatga qodirligini butun olamga isbotladi.</p></div>
+      <div class="row rv" style="--i:7"><b>Bobur <i>1483–1530</i></b><p>Sarkarda ham, shoir ham edi. “Boburnoma” — jahon adabiyotidagi eng samimiy xotiralardan biri.</p></div>
+    </div>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Goʻri Amir"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Gur_Emir_2006.jpg/1200px-Gur_Emir_2006.jpg" referrerpolicy="no-referrer" alt="Goʻri Amir maqbarasi" onerror="imgFail(this)"></figure>
+    <figure data-cap="Ulugʻbek rasadxonasi"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ulugh_Beg_Observatory_02.jpg/1400px-Ulugh_Beg_Observatory_02.jpg" referrerpolicy="no-referrer" alt="Ulugʻbek rasadxonasi" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 06 SHAHARLAR -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">06</span>
+    <p class="kicker rv" style="--i:0">UNESCO roʻyxatidagi shaharlar</p>
+    <h2 class="rv" style="--i:1">Qadimiy <em>shaharlar</em></h2>
+    <div class="rows">
+      <div class="row rv" style="--i:2"><b>Samarqand <i>2001</i></b><p>2750 yildan ortiq tarix. Registon maydoni, Bibixonim masjidi, Shohi Zinda — Buyuk ipak yoʻlining yuragi.</p></div>
+      <div class="row rv" style="--i:3"><b>Buxoro <i>1993</i></b><p>“Buxoroi sharif” deb atalgan. Poi Kalon majmuasi, Ark qalʼasi va gʻishtdan tikilgan Somoniylar maqbarasi.</p></div>
+      <div class="row rv" style="--i:4"><b>Xiva, Ichan qalʼa <i>1990</i></b><p>Mamlakatimizdan roʻyxatga kiritilgan birinchi obyekt. Devor ichidagi butun shahar — ochiq osmon ostidagi muzey.</p></div>
+      <div class="row rv" style="--i:5"><b>Shahrisabz <i>2000</i></b><p>Amir Temurning tugʻilgan yurti. Oqsaroyning bugungacha yetib kelgan peshtoqi ham kishini hayratga soladi.</p></div>
+    </div>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Samarqand"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Registan_three_madrasahs_Samarkand.jpg/1600px-Registan_three_madrasahs_Samarkand.jpg" referrerpolicy="no-referrer" alt="Samarqand madrasalari" onerror="imgFail(this)"></figure>
+    <figure data-cap="Xiva"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Night-khiva.jpg/800px-Night-khiva.jpg" referrerpolicy="no-referrer" alt="Tungi Xiva" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 07 XALQ -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">07</span>
+    <p class="kicker rv" style="--i:0">2026-yilgi roʻyxatga olish</p>
+    <h2 class="rv" style="--i:1">Xalqimiz</h2>
+    <p class="lede rv" style="--i:2">Dastlabki natijalarga koʻra, yurtimizda <b data-count="39047321">0</b> kishi yashaydi — har biri oʻz uyi, kasbi va orzusi bilan.</p>
+    <div class="meter rv" style="--i:3">
+      <div class="top"><span>Oʻzbeklar ulushi</span><b><span data-count="89.4" data-dec="1">0</span>%</b></div>
+      <div class="track"><i data-pct="89.4" style="--c:var(--green)"></i></div>
+    </div>
+    <div class="meter rv" style="--i:4">
+      <div class="top"><span>Oʻzbek tilini ona tili deb bilganlar</span><b><span data-count="91.3" data-dec="1">0</span>%</b></div>
+      <div class="track"><i data-pct="91.3" style="--c:var(--blue)"></i></div>
+    </div>
+    <p class="note rv" style="--i:5">Bir dasturxon atrofida oʻnlab millat vakillari oʻtiradi. Til, urf-odat har xil boʻlishi mumkin, ammo Vatan — bitta.</p>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Navroʻz"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Famille_boukhariote_durant_Navrouz_%28Boukhara%2C_Ouzb%C3%A9kistan%29_%285676926116%29.jpg/700px-Famille_boukhariote_durant_Navrouz_%28Boukhara%2C_Ouzb%C3%A9kistan%29_%285676926116%29.jpg" referrerpolicy="no-referrer" alt="Navroʻz bayrami" onerror="imgFail(this)"></figure>
+    <figure data-cap="Chorsu bozori"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Chorsu_Bazaar%2C_Tashkent%2C_Uzbekistan_-_2019-06-01_1.jpg/1400px-Chorsu_Bazaar%2C_Tashkent%2C_Uzbekistan_-_2019-06-01_1.jpg" referrerpolicy="no-referrer" alt="Chorsu bozori" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 08 SHE'RIYAT -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">08</span>
+    <p class="kicker rv" style="--i:0">Soʻz</p>
+    <h2 class="rv" style="--i:1">Sheʼriyatda <em>Vatan</em></h2>
+    <div class="poems">
+      <article class="poem rv" style="--i:2">
+        <h3>Vatanni suymak</h3><p class="by">Abdulla Avloniy · 1913</p>
+        <p>Banga na gʻam, qolur avlodima uy-u vatanim,<br>Gʻubora doʻnsa gʻamim yoʻq vujud zeri vahm,<br>Charoki oʻz vatanim hokidur goʻr-u kafanim.</p>
+      </article>
+      <article class="poem rv" style="--i:3">
+        <h3>Ona yurt</h3><p class="by">taqdimot uchun yozilgan satrlar</p>
+        <p>Togʻing — yelkam, dalang — mening nonim,<br>Suving tomirimda oqqan qonim.<br>Qay bir yurtda yursam ham, bilaman:<br>Qaytar joyim — sen, mening Vatanim.</p>
+      </article>
+      <article class="poem rv" style="--i:4">
+        <h3>Tuprogʻim</h3><p class="by">taqdimot uchun yozilgan satrlar</p>
+        <p>Bir hovuch tuprogʻing — oltin xazina,<br>Bobolar uyqusi shunda muqim.<br>Men senga qarzdorman, ona zamin,<br>Mehnatim, bilimim — senga taqdim.</p>
+      </article>
+    </div>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Milliy naqsh"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Uzbek_decorative.jpg/1400px-Uzbek_decorative.jpg" referrerpolicy="no-referrer" alt="Milliy naqsh" onerror="imgFail(this)"></figure>
+    <figure data-cap="Buxoro bozori"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bazaar_in_Bukhara.jpg/1000px-Bazaar_in_Bukhara.jpg" referrerpolicy="no-referrer" alt="Buxoro bozori" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 09 QO'SHIQ -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">09</span>
+    <p class="kicker rv" style="--i:0">Kuyga solingan Vatan</p>
+    <h2 class="rv" style="--i:1">Qoʻshiqda <em>Vatan</em></h2>
+    <div class="rows rv" style="--i:2">
+      <div class="row"><b>“Ulugʻimsan, Vatanim”</b><p>Ijrochi: Sevara Nazarxon · Soʻzlari: Muhammad Yusuf</p></div>
+    </div>
+    <p class="lede rv" style="--i:3">Muhammad Yusufning sheʼri Sevara Nazarxon ijrosida butun yurtga tarqaldi. Keyinchalik uni Fransiya, Rossiya, Meksika, Xitoy, Hindiston xonandalari ham oʻz tillarida kuyladi.</p>
+    <p class="note rv" style="--i:4">Sevara Nazarxon — Oʻzbekiston xalq artisti, 2004-yilda BBC Radio 3 jahon musiqasi mukofotiga sazovor boʻlgan. Qoʻshiqni shu yerda tinglash uchun pastdagi “Musiqa” tugmasini bosing.</p>
+  </div>
+  <div class="plate split">
+    <figure data-cap="Xalq ijodi"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Performances_by_folk_groups.jpg/640px-Performances_by_folk_groups.jpg" referrerpolicy="no-referrer" alt="Xalq ijodi guruhi" onerror="imgFail(this)"></figure>
+    <figure data-cap="Chang"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Chang_%28Tashkent%2C_Ouzb%C3%A9kistan%29_%285617347984%29.jpg/800px-Chang_%28Tashkent%2C_Ouzb%C3%A9kistan%29_%285617347984%29.jpg" referrerpolicy="no-referrer" alt="Chang cholgʻusi" onerror="imgFail(this)"></figure>
+  </div>
+</section>
+
+<!-- 10 MAQOLLAR -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">10</span>
+    <p class="kicker rv" style="--i:0">Xalq nima deydi</p>
+    <h2 class="rv" style="--i:1">Xalq <em>maqollari</em></h2>
+    <div class="sayings">
+      <div class="saying rv" style="--i:2"><em>01</em><p>Bulbul chamanni sevar, odam — Vatanni.</p></div>
+      <div class="saying rv" style="--i:3"><em>02</em><p>Vatansiz inson — kuysiz bulbul.</p></div>
+      <div class="saying rv" style="--i:4"><em>03</em><p>Vataning tinch — sen tinch.</p></div>
+      <div class="saying rv" style="--i:5"><em>04</em><p>Vatan qadrini bilmagan oʻz qadrini bilmas.</p></div>
+      <div class="saying rv" style="--i:6"><em>05</em><p>Ona yurting — oltin beshiging.</p></div>
+      <div class="saying rv" style="--i:7"><em>06</em><p>Kishi yurtida sulton boʻlguncha, oʻz yurtingda choʻpon boʻl.</p></div>
+      <div class="saying rv" style="--i:8"><em>07</em><p>Tugʻilgan yerdan koʻngil uzilmas.</p></div>
+      <div class="saying rv" style="--i:9"><em>08</em><p>Oʻzga yurtning gulidan oʻz yurtingning choʻli yaxshi.</p></div>
+    </div>
+  </div>
+  <div class="plate" data-cap="Boʻstonliq">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Bostonliq_oromgoh.jpg/1200px-Bostonliq_oromgoh.jpg" referrerpolicy="no-referrer" alt="Boʻstonliq" onerror="imgFail(this)">
+  </div>
+</section>
+
+<!-- 11 MEN NIMA QILAMAN -->
+<section class="slide">
+  <div class="pane">
+    <span class="folio">11</span>
+    <p class="kicker rv" style="--i:0">Katta soʻz emas, kichik ish</p>
+    <h2 class="rv" style="--i:1">Vatan uchun men <em>nima qila olaman?</em></h2>
+    <div class="rows">
+      <div class="row rv" style="--i:2"><b>Bilim olish</b><p>Yaxshi oʻqigan, kasbini puxta egallagan yosh — yurtning yer ostidagi boyligidan ham qimmat.</p></div>
+      <div class="row rv" style="--i:3"><b>Tabiatni asrash</b><p>Bir tup daraxt ekish, joʻmrakni behuda oqizmaslik, oʻzingdan keyin joyni toza qoldirish.</p></div>
+      <div class="row rv" style="--i:4"><b>Tarixni oʻrganish</b><p>Oʻtmishini bilgan odam oʻz qadrini biladi; qadrini bilgan odamni hech kim aldab boʻlmaydi.</p></div>
+      <div class="row rv" style="--i:5"><b>Halol mehnat</b><p>Dehqonning hosili, muhandisning loyihasi, oʻqituvchining darsi — hammasi bir yurtning ertasi.</p></div>
+    </div>
+  </div>
+  <div class="plate" data-cap="Gulkam darasi">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Gulkam_narrow_%28winter%29.jpg/1000px-Gulkam_narrow_%28winter%29.jpg" referrerpolicy="no-referrer" alt="Gulkam darasi" onerror="imgFail(this)">
+  </div>
+</section>
+
+<!-- 12 YAKUN -->
+<section class="slide wide final">
+  <img class="finalbg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/People_watching_Registan_Square.jpg/1200px-People_watching_Registan_Square.jpg" referrerpolicy="no-referrer" alt="" onerror="this.remove()">
+  <div class="pane">
+    <p class="kicker rv" style="--i:0">Yakun</p>
+    <h2 class="mark rv" style="--i:1">Vaqt ajratganingiz uchun <em>rahmat!</em></h2>
+    <p class="lede rv" style="--i:2">Vatanimiz tinch, osmonimiz musaffo, dasturxonimiz toʻkin boʻlsin!</p>
+    <p class="kicker rv" style="--i:3">Tayyorladi</p>
+    <div class="crew">
+      <span class="rv" style="--i:4">Shodmonov Yahyo</span>
+      <span class="rv" style="--i:5">Gʻofurjonov Abdulloh</span>
+      <span class="rv" style="--i:6">Nurumbetov Nurshod</span>
+      <span class="rv" style="--i:7">Hatamov Nurshod</span>
+      <span class="rv" style="--i:8">Qurbonova Ezoza</span>
+      <span class="rv" style="--i:9">Abduvaliiyeva Farzona</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="ytbox" id="ytbox" hidden></div>
+<footer class="botbar">
+  <button class="mbtn" id="musicBtn"><span id="mbtnText">Musiqa</span></button>
+  <span class="note" id="counter" aria-live="polite">01 / 12</span>
+  <span class="arrows">
+    <button id="prevBtn" aria-label="Oldingi">←</button>
+    <button id="nextBtn" aria-label="Keyingi">→</button>
+  </span>
+</footer>
+<div class="flagrule" aria-hidden="true"></div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var cur = -1;
+
+  /* ---- bayroq SVG ---- */
+  function starPath(cx, cy, r){
+    var d = "", i, a, rr;
+    for(i = 0; i < 10; i++){
+      rr = i % 2 === 0 ? r : r * 0.382;
+      a = -Math.PI / 2 + i * Math.PI / 5;
+      d += (i ? "L" : "M") + (cx + rr * Math.cos(a)).toFixed(2) + " " + (cy + rr * Math.sin(a)).toFixed(2);
+    }
+    return d + "Z";
+  }
+  var cols = [46, 58, 70, 82, 94], rows = [9, 20, 31], stars = [];
+  [[2,3,4],[1,2,3,4],[0,1,2,3,4]].forEach(function(r, ri){
+    r.forEach(function(c){ stars.push([cols[c], rows[ri]]); });
+  });
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 125" preserveAspectRatio="none">';
+  [[0,40,"#0099B5"],[40,2.5,"#CE1126"],[42.5,40,"#FFFFFF"],[82.5,2.5,"#CE1126"],[85,40,"#1EB53A"]]
+    .forEach(function(b, i){ svg += '<rect class="band" style="--i:' + i + '" x="0" y="' + b[0] + '" width="250" height="' + b[1] + '" fill="' + b[2] + '"/>'; });
+  svg += '<g class="moon"><circle cx="22" cy="20" r="12" fill="#fff"/><circle cx="26.5" cy="20" r="10.6" fill="#0099B5"/></g>';
+  stars.forEach(function(p, k){ svg += '<path class="st" style="--s:' + k + '" d="' + starPath(p[0], p[1], 3.6) + '" fill="#fff"/>'; });
+  document.getElementById("flagBox").innerHTML = svg + "</svg>";
+
+  /* ---- sahifa belgilari ---- */
+  var ticks = document.getElementById("ticks"), th = "";
+  slides.forEach(function(){ th += "<i></i>"; });
+  ticks.innerHTML = th;
+  var tickEls = Array.prototype.slice.call(ticks.children);
+
+  /* ---- hisoblagichlar ---- */
+  function fmt(v, dec){
+    var s = v.toFixed(dec).split(".");
+    s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0");
+    return s.join(",");
+  }
+  function counters(slide){
+    Array.prototype.forEach.call(slide.querySelectorAll("[data-count]"), function(el, idx){
+      var target = parseFloat(el.getAttribute("data-count"));
+      var dec = parseInt(el.getAttribute("data-dec") || "0", 10);
+      el.textContent = fmt(target, dec);
+      if(!el.getAttribute("data-w")){
+        el.style.display = "inline-block";
+        el.style.minWidth = Math.ceil(el.getBoundingClientRect().width) + "px";
+        el.setAttribute("data-w", "1");
+      }
+      if(reduce) return;
+      el.textContent = fmt(0, dec);
+      var t0 = null;
+      setTimeout(function(){
+        function step(t){
+          if(t0 === null) t0 = t;
+          var p = Math.min(1, (t - t0) / 1900), e = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt(target * e, dec);
+          if(p < 1 && slide.classList.contains("active")) requestAnimationFrame(step);
+          else el.textContent = fmt(target, dec);
+        }
+        requestAnimationFrame(step);
+      }, 700 + idx * 120);
+    });
+    Array.prototype.forEach.call(slide.querySelectorAll(".track i"), function(b){
+      b.style.transition = "none"; b.style.width = "0";
+      void b.getBoundingClientRect();
+      b.style.transition = "";
+      b.style.width = b.getAttribute("data-pct") + "%";
+    });
+  }
+
+  /* ---- navigatsiya ---- */
+  var counter = document.getElementById("counter");
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function go(n){
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if(n === cur) return;
+    slides.forEach(function(s, i){
+      s.classList.toggle("active", i === n);
+      s.classList.toggle("past", i < n);
+      s.setAttribute("aria-hidden", i === n ? "false" : "true");
+    });
+    tickEls.forEach(function(t, i){ t.classList.toggle("on", i <= n); });
+    cur = n;
+    slides[n].querySelector(".pane").scrollTop = 0;
+    counter.textContent = pad(n + 1) + " / " + pad(slides.length);
+    counters(slides[n]);
+  }
+  function next(){ go(cur + 1); }
+  function prev(){ go(cur - 1); }
+  document.getElementById("nextBtn").addEventListener("click", function(e){ e.stopPropagation(); next(); });
+  document.getElementById("prevBtn").addEventListener("click", function(e){ e.stopPropagation(); prev(); });
+  document.getElementById("deck").addEventListener("click", function(e){
+    if(e.target.closest("button, a, input, .ytbox")) return;
+    if(window.getSelection && String(window.getSelection()).length) return;
+    next();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.target.tagName === "INPUT") return;
+    switch(e.key){
+      case "ArrowRight": case "ArrowDown": case "PageDown": case " ":
+        e.preventDefault(); next(); break;
+      case "ArrowLeft": case "ArrowUp": case "PageUp":
+        e.preventDefault(); prev(); break;
+      case "Home": go(0); break;
+      case "End": go(slides.length - 1); break;
+      case "m": case "M": case "\u044c": case "\u042c": mbtn.click(); break;
+      case "f": case "F": case "\u0430": case "\u0410":
+        if(!document.fullscreenElement){ (document.documentElement.requestFullscreen || function(){}).call(document.documentElement); }
+        else if(document.exitFullscreen){ document.exitFullscreen(); }
+        break;
+    }
+  });
+  var sx = 0, sy = 0;
+  document.addEventListener("touchstart", function(e){ sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener("touchend", function(e){
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3){ dx < 0 ? next() : prev(); }
+  }, {passive:true});
+
+  /* ---- musiqa (YouTube) ---- */
+  // Havolani shu yerga yozsangiz, tugma bosilganda darhol ijro boshlanadi:
+  var YT_URL = "";
+  var ytbox = document.getElementById("ytbox"), mbtn = document.getElementById("musicBtn"),
+      mtext = document.getElementById("mbtnText"), playing = false;
+  function ytId(u){
+    var m = String(u).match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : (/^[A-Za-z0-9_-]{11}$/.test(String(u).trim()) ? String(u).trim() : null);
+  }
+  function play(id){
+    ytbox.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id +
+      '&rel=0&modestbranding=1" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="Fon musiqasi"></iframe>';
+    ytbox.hidden = false; playing = true; mtext.textContent = "Musiqani oʻchirish";
+    try{ localStorage.setItem("vatan_yt", id); }catch(e){}
+  }
+  function stop(){ ytbox.innerHTML = ""; ytbox.hidden = true; playing = false; mtext.textContent = "Musiqa"; }
+  function ask(){
+    ytbox.innerHTML = '<div class="ytform"><p>YouTube havolasini qoʻying:</p>' +
+      '<input id="ytin" type="text" placeholder="https://youtu.be/..." inputmode="url">' +
+      '<button id="ytgo">Ijro etish</button></div>';
+    ytbox.hidden = false;
+    var inp = document.getElementById("ytin"); inp.focus();
+    ytbox.addEventListener("click", function(e){ e.stopPropagation(); });
+    document.getElementById("ytgo").addEventListener("click", function(e){
+      e.stopPropagation();
+      var id = ytId(inp.value);
+      if(id) play(id); else { inp.value = ""; inp.placeholder = "Havola notoʻgʻri"; }
+    });
+    inp.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.stopPropagation(); document.getElementById("ytgo").click(); } });
+  }
+  mbtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    if(playing) return stop();
+    var saved = null;
+    try{ saved = localStorage.getItem("vatan_yt"); }catch(err){}
+    var id = ytId(YT_URL) || saved;
+    if(id) play(id); else ask();
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

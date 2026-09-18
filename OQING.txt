@@ -1,0 +1,11 @@
+VATAN — 2-dizayn (nashr/jurnal uslubi)
+
+index.html ni brauzerda oching. Internet kerak: rasmlar Wikimedia Commons'dan,
+shriftlar Google Fonts'dan yuklanadi.
+
+BOSHQARUV: <- ->  yoki Space — varaqlash, F — to'liq ekran, M — musiqa,
+telefonda — chapga/o'ngga surish.
+
+MUSIQA: pastdagi "Musiqa" tugmasini bosing va YouTube havolasini qo'ying.
+Kod ichidagi  var YT_URL = "";  qatoriga havolani yozib qo'ysangiz, har safar
+kiritish shart bo'lmaydi.
